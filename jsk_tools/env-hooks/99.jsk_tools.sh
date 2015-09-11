@@ -92,7 +92,7 @@ rossetip_addr() {
     fi
     local mask_target_ip=$(echo ${target_hostip} | cut -d. -f1-3)
     for ip in $(hostname -I); do
-        if echo $ip | egrep "^172.17.42.|^127.0."; then
+        if echo $ip | egrep "^172.17.42.|^127.0." >/dev/null; then
             # skip docker/local host
             continue
         elif [ "${mask_targetip}" = "" ]; then
@@ -164,4 +164,28 @@ rost() {
             rost
         fi
     fi
+}
+
+restart_travis() {
+  # Restart travis from command line
+  if [ $# -lt 2 ]; then
+    echo "usage: restart_travis <repo_slug> <job_id>"
+    echo "example:"
+    echo "  restart_travis jsk-ros-pkg/jsk_common 1258.2"
+    return 1
+  fi
+  if [ -z $SLACK_TOKEN ]; then
+    echo "Please set SLACK_TOKEN (see: https://api.slack.com/web)"
+    return 1
+  fi
+  local slug job_id msg
+  slug=$1
+  job_id=$2
+  msg="restart travis $slug $job_id"
+  echo "sending... '$msg' -> #travis"
+  echo $msg | slacker --channel travis --as-user
+  if [ $? -eq 2 ]; then
+    echo "Please upgrade slacker-cli" >&2
+    return 1
+  fi
 }
