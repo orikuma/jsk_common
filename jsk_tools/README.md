@@ -71,6 +71,9 @@ $ rosdefault
 set ROS_MASTER_URI to http://baxter:11311
 ```
 
+rosbag\_record\_interactive
+---------------------------
+You can choose topics to record in GUI and record them into a bag file
 
 restart\_travis
 ---------------
@@ -203,6 +206,15 @@ plots:
     field: ["driver_temp[15:17]"]
     layout: [1, 1]
 ```
+
+roscore_regardless.py
+---------------------
+This script always checks roscore liveness and automatically run and kill a program.
+
+```
+rosrun jsk_tools roscore_regardless.py rostopic echo /foo
+```
+
 
 emacs
 -----
